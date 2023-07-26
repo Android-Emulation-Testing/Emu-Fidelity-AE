@@ -45,15 +45,30 @@ with ZipFile("data.zip", 'r') as zObject:
 
 print("Reading failure data...")
 df = pd.read_csv("data.csv")
-df = helper.generate_identifier(df)
 freq = helper.get_freq_list(df)
 
-true_positives = freq[(freq["count_phys"] != 0) & (freq["count_virt"] != 0)]["identifier"]
-false_positives = freq[(freq["count_phys"] == 0) & (freq["count_virt"] != 0)]["identifier"]
-false_negatives = freq[(freq["count_phys"] != 0) & (freq["count_virt"] == 0)]["identifier"]
+true_positives = freq[(freq["count_phys"] != 0) & (freq["count_virt"] != 0)]["type"]
+false_positives = freq[(freq["count_phys"] == 0) & (freq["count_virt"] != 0)]["type"]
+false_negatives = freq[(freq["count_phys"] != 0) & (freq["count_virt"] == 0)]["type"]
 
 g_test_rounds = np.array([12, 12, 12, 12, 12, 5, 12, 5, 12, 9]) # the number of test rounds for each app
 g_device_version = np.array([172, 243, 373, 692, 1077, 1568, 1438, 355]) # number of devices for each android version
+
+# overall precision and recall of the test results on virtualized devices
+
+# precision: true positives / (true positives + false positives)
+# recall: true positives / (true positives + false negatives)
+
+df_phys_tp = df[(df["device_model"] != "virt") & (df["type"].isin(true_positives))]
+df_virt_tp = df[(df["device_model"] == "virt") & (df["type"].isin(true_positives))]
+df_fp = df[df["type"].isin(false_positives)]
+df_fn = df[df["type"].isin(false_negatives)]
+
+precision = (len(df_virt_tp) / (len(df_virt_tp) + len(df_fp)) * 100)
+
+recall = (len(df_phys_tp) / (len(df_phys_tp) + len(df_fn)) * 100)
+
+print(f"The overall precision and recall of the test results on virtualized devices are {round(precision, 1)}% and {round(recall, 1)}% respectively.")
 
 print("Plotting figures...")
 
@@ -69,10 +84,10 @@ recall = []
 
 for id in app_id:
     df_app = df[df["app_id"] == id]
-    df_phys_tp = df_app[(df_app["device_model"] != "virt") & (df_app["identifier"].isin(true_positives))]
-    df_virt_tp = df_app[(df_app["device_model"] == "virt") & (df_app["identifier"].isin(true_positives))]
-    df_fp = df_app[df_app["identifier"].isin(false_positives)]
-    df_fn = df_app[df_app["identifier"].isin(false_negatives)]
+    df_phys_tp = df_app[(df_app["device_model"] != "virt") & (df_app["type"].isin(true_positives))]
+    df_virt_tp = df_app[(df_app["device_model"] == "virt") & (df_app["type"].isin(true_positives))]
+    df_fp = df_app[df_app["type"].isin(false_positives)]
+    df_fn = df_app[df_app["type"].isin(false_negatives)]
     precision.append(len(df_virt_tp) / (len(df_virt_tp) + len(df_fp)) * 100)
     recall.append(len(df_phys_tp) / (len(df_phys_tp) + len(df_fn)) * 100)
 
@@ -111,10 +126,10 @@ recall = []
 
 for v in versions:
     df_v = df[(df["android_version"] >= v) & (df["android_version"] < (v + 1))]
-    df_phys_tp = df_v[(df_v["device_model"] != "virt") & (df_v["identifier"].isin(true_positives))]
-    df_virt_tp = df_v[(df_v["device_model"] == "virt") & (df_v["identifier"].isin(true_positives))]
-    df_fp = df_v[df_v["identifier"].isin(false_positives)]
-    df_fn = df_v[df_v["identifier"].isin(false_negatives)]
+    df_phys_tp = df_v[(df_v["device_model"] != "virt") & (df_v["type"].isin(true_positives))]
+    df_virt_tp = df_v[(df_v["device_model"] == "virt") & (df_v["type"].isin(true_positives))]
+    df_fp = df_v[df_v["type"].isin(false_positives)]
+    df_fn = df_v[df_v["type"].isin(false_negatives)]
     precision.append(len(df_virt_tp) / (len(df_virt_tp) + len(df_fp)) * 100)
     recall.append(len(df_phys_tp) / (len(df_phys_tp) + len(df_fn)) * 100)
 
@@ -223,10 +238,10 @@ recall = []
 
 for id in app_id:
     df_app = df[df["app_id"] == id]
-    df_phys_tp = df_app[(df_app["device_model"] != "virt") & (df_app["identifier"].isin(true_positives))]
-    df_virt_tp = df_app[(df_app["device_model"] == "virt") & (df_app["identifier"].isin(true_positives))]
-    df_fp = df_app[df_app["identifier"].isin(false_positives)]
-    df_fn = df_app[df_app["identifier"].isin(false_negatives)]
+    df_phys_tp = df_app[(df_app["device_model"] != "virt") & (df_app["type"].isin(true_positives))]
+    df_virt_tp = df_app[(df_app["device_model"] == "virt") & (df_app["type"].isin(true_positives))]
+    df_fp = df_app[df_app["type"].isin(false_positives)]
+    df_fn = df_app[df_app["type"].isin(false_negatives)]
     precision.append(len(df_virt_tp) / (len(df_virt_tp) + len(df_fp)) * 100)
     recall.append(len(df_phys_tp) / (len(df_phys_tp) + len(df_fn)) * 100)
 
@@ -313,10 +328,10 @@ cts = ["Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y"
 
 for brand in brands:
     df_brand = df[df["device_brand"] == brand]
-    df_phys_tp = df_brand[(df_brand["device_model"] != "virt") & (df_brand["identifier"].isin(true_positives))]
-    df_virt_tp = df_brand[(df_brand["device_model"] == "virt") & (df_brand["identifier"].isin(true_positives))]
-    df_fp = df_brand[df_brand["identifier"].isin(false_positives)]
-    df_fn = df_brand[df_brand["identifier"].isin(false_negatives)]
+    df_phys_tp = df_brand[(df_brand["device_model"] != "virt") & (df_brand["type"].isin(true_positives))]
+    df_virt_tp = df_brand[(df_brand["device_model"] == "virt") & (df_brand["type"].isin(true_positives))]
+    df_fp = df_brand[df_brand["type"].isin(false_positives)]
+    df_fn = df_brand[df_brand["type"].isin(false_negatives)]
     precisions.append(len(df_virt_tp) / (len(df_virt_tp) + len(df_fp)) * 100)
     recalls.append(len(df_phys_tp) / (len(df_phys_tp) + len(df_fn)) * 100)
 
@@ -326,7 +341,7 @@ recalls = [str(round(x, 1)) + "%" for x in recalls]
 
 print("Table 2: The 27 phone vendors and their corresponding numbers of device models (# Models) involved in our study. The rightmost four columns respectively denote the country/region in which the vendor obtains the most sales revenue (Region), whether the device models are CTS/VTS-compliant (C/VTS), the Precision and Recall of the test results on virtualized devices for each vendor.")
 print()
-print(pd.DataFrame({"Vendor": brands, "# Models": device_count, "Region": regions, "C/VTS": cts, "Precision": precisions, "Recall": recalls}))
+print(pd.DataFrame({"Vendor": brands, "# Models": device_count, "Region": regions, "C/VTS": cts, "Precision": precisions, "Recall": recalls}).to_string(index=False))
 print()
 
 
@@ -335,18 +350,19 @@ print()
 
 entities = ["App", "Third-party", "App", "App", "App", "App", "App", "App", "App", "App"]
 
+root_causes = ["Bad resource handling during activity lifecycle shifts", "Defects in OPPO market SDK", "Null object reference in app module", "Attempt to cast null reference to non-null Kotlin class", "Failed resolution of app Java classes", "Method parameter specified as non-null is null", "Incompatible Java class casts", "Out of memory when allocating Bitmap objects", "Method invocation on null app objects", "Out of memory when creating new threads"]
+
 total_freq = freq.copy()
 total_freq["count"] = total_freq["count_phys"] + total_freq["count_virt"]
-total_freq["portion"] = total_freq["count"] / freq[freq["identifier"].isin(true_positives)]["count"].sum()
+total_freq["portion"] = total_freq["count"] / freq[freq["type"].isin(true_positives)]["count"].sum()
 total_freq = total_freq.sort_values(by="count", ascending=False).reset_index(drop=True)[:10]
 
 portions = (total_freq["portion"] * 100).round(1).astype(str) + "%"
-reasons = [x["identifier"] for idx, x in total_freq.iterrows()]
-apps = [sorted(df[df["identifier"] == x["identifier"]]["app_id"].unique()) for idx, x in total_freq.iterrows()]
+apps = [sorted(df[df["type"] == x["type"]]["app_id"].unique()) for idx, x in total_freq.iterrows()]
 
 print("Table 3: The top-10 most frequent types of failures. The columns respectively denote the ranking of the failure type in terms of frequency (No.), the portion of failure events (Portion), the IDs of the apps under influence (App-ID), the responsible Entity for the failure (i.e., an app, a vendor, the OS, the emulator, or a third-party component), the triggered Exception/Signal of the failure, and the Root Cause of each failure.")
 print()
-print(pd.DataFrame({"No.": range(1, 11), "Portion": portions, "App-ID": apps, "Entity": entities, "Root Cause": reasons}))
+print(pd.DataFrame({"No.": range(1, 11), "Portion": portions, "App-ID": apps, "Entity": entities, "Root Cause": root_causes}).to_string(index=False))
 print()
 
 
@@ -355,18 +371,19 @@ print()
 
 entities = ["AOSP", "Meizu", "MediaTek", "Samsung", "OPPO"]
 
-fn_freq = freq[freq["identifier"].isin(false_negatives)].copy()
+root_causes = ["Integer overflow during implicit conversions", "Improper null-terminations of C/C++ strings in vendor modules", "Errors in MediaTek’s GPU drivers", "Array index out of bounds in vendor modules", "Permission denial when querying autostart permission"]
+
+fn_freq = freq[freq["type"].isin(false_negatives)].copy()
 fn_freq["count"] = fn_freq["count_phys"] + fn_freq["count_virt"]
-fn_freq["portion"] = fn_freq["count"] / freq[freq["identifier"].isin(false_negatives)]["count"].sum()
+fn_freq["portion"] = fn_freq["count"] / freq[freq["type"].isin(false_negatives)]["count"].sum()
 fn_freq = fn_freq.sort_values(by="count", ascending=False).reset_index(drop=True)[:5]
 
 portions = (fn_freq["portion"] * 100).round(1).astype(str) + "%"
-reasons = [x["identifier"] for idx, x in fn_freq.iterrows()]
-apps = [sorted(df[df["identifier"] == x["identifier"]]["app_id"].unique()) for idx, x in fn_freq.iterrows()]
+apps = [sorted(df[df["type"] == x["type"]]["app_id"].unique()) for idx, x in fn_freq.iterrows()]
 
 print("Table 4: The top-5 most frequent types of false negative failures. The columns denote the same meanings as in Table 3.")
 print()
-print(pd.DataFrame({"No.": range(1, 6), "Portion": portions, "App-ID": apps, "Entity": entities, "Root Cause": reasons}))
+print(pd.DataFrame({"No.": range(1, 6), "Portion": portions, "App-ID": apps, "Entity": entities, "Root Cause": root_causes}).to_string(index=False))
 print()
 
 
@@ -375,16 +392,17 @@ print()
 
 entities = ["AOSP, Emulator", "Emulator", "AOSP, Emulator", "Third-party", "Emulator"]
 
-fp_freq = freq[freq["identifier"].isin(false_positives)].copy()
+root_causes = ["Graphics resource format inconsistency", "Missing graphics buffer allocator", "Graphics buffer overrun (due to graphics format inconsistency)", "Null pointer dereference in third-party media player", "Rendering issues in the graphics driver used by emulators"]
+
+fp_freq = freq[freq["type"].isin(false_positives)].copy()
 fp_freq["count"] = fp_freq["count_phys"] + fp_freq["count_virt"]
-fp_freq["portion"] = fp_freq["count"] / freq[freq["identifier"].isin(false_positives)]["count"].sum()
+fp_freq["portion"] = fp_freq["count"] / freq[freq["type"].isin(false_positives)]["count"].sum()
 fp_freq = fp_freq.sort_values(by="count", ascending=False).reset_index(drop=True)[:5]
 
 portions = (fp_freq["portion"] * 100).round(1).astype(str) + "%"
-reasons = [x["identifier"] for idx, x in fp_freq.iterrows()]
-apps = [sorted(df[df["identifier"] == x["identifier"]]["app_id"].unique()) for idx, x in fp_freq.iterrows()]
+apps = [sorted(df[df["type"] == x["type"]]["app_id"].unique()) for idx, x in fp_freq.iterrows()]
 
 print("Table 5: The top-5 most frequent types of false positive failures. The columns denote the same meanings as in Table 3.")
 print()
-print(pd.DataFrame({"No.": range(1, 6), "Portion": portions, "App-ID": apps, "Entity": entities, "Root Cause": reasons}))
+print(pd.DataFrame({"No.": range(1, 6), "Portion": portions, "App-ID": apps, "Entity": entities, "Root Cause": root_causes}).to_string(index=False))
 print()

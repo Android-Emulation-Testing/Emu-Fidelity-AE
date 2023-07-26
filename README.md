@@ -1,10 +1,13 @@
-# Anonymized Failure Data from Mobile App Testing on Virtualized Device Farms
+# Artifact for MobiCom'23: Dissecting the Fidelity of Mobile App Testing on Virtualized Devices at Scale: Experience and Enhancement
+
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+<a href="https://colab.research.google.com/drive/19DYtr3yrJs6aKrXXyKWrBbMsCEvw46qw?usp=sharing"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="google colab logo"></a>
 
 ## Overview
 
 This repository contains the anonymized failure data collected from our physical and device farms over a three-month period. The failure data involves 5,918 physical devices as well as 5,918 virtualized devices running on ARM commodity servers.
 
-For more details, please visit our website ([android-emulation-testing.github.io](https://android-emulation-testing.github.io/)) or read our paper:
+For more details, please visit our website ([Android-Emulation-Testing.github.io](https://android-emulation-testing.github.io/)) or read our paper:
 * Dissecting the Fidelity of Mobile App Testing on Virtualized Devices: Experience and Enhancement
 
 ## Data Format
@@ -17,6 +20,7 @@ Part of our data is anonymized due to the request of our legal department.
 
 | Column | Description | Example |
 | ------ | ----------- | ------- |
+| type | A number that labels failure type. Failures that belong to the same type have the same number. | 1 |
 | error | The triggered exception/signal of the failure | java.lang.NullPointerException |
 | reason | The descriptive message printed after the error | must not be null |
 | stack_frame | The call stack of the failure | [{'file': 'app.java', 'method': 'badMethod()', 'line_number': '10'}] |
@@ -32,15 +36,15 @@ Part of our data is anonymized due to the request of our legal department.
 
 You can run the evaluation script that produces the major figures and tables in our paper in two ways.
 
-1. (Recommended) Google Colab Notebook
+1. **(Recommended) Google Colab Notebook**
 * Simply open [this notebook](https://colab.research.google.com/drive/19DYtr3yrJs6aKrXXyKWrBbMsCEvw46qw?usp=sharing). Under the `Runtime` tab, select `Run all`.
-* The dependencies will be automatically configured and wait for ~1 minute as it processes the data.
+* The dependencies will be automatically configured. Please wait for ~3 minutes as the data are being processed.
 * The figures and tables will be displayed in your browser.
 
-2. Local Setup
+1. Local Setup
 * Clone this repository.
-* Install [Python 3](https://www.python.org/downloads/) if you have not already. Then type `pip3 install -r requirements.txt` at the root directory of this repo to install the dependencies.
-* type `python3 plot.py` and wait for ~1 minute as it processes the data.
+* Install [Python 3](https://www.python.org/downloads/) if you have not already. Then, run `pip3 install -r requirements.txt` at the root directory of this repo to install the dependencies.
+* Run `python3 plot.py` at the root directory of this repo and wait for ~3 minutes as the data are being processed.
 * A `fig/` directory will be created, and figures used in our paper can be found there. Tables will be printed to `stdout`.
 
 ## License
