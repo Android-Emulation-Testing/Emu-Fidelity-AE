@@ -1,4 +1,4 @@
-# Artifact for MobiCom'23: Dissecting the Fidelity of Mobile App Testing on Virtualized Devices at Scale: Experience and Enhancement
+# Artifact for MobiCom'23: Virtual Device Farms for Mobile App Testing at Scale: A Pursuit for Fidelity, Efficiency, and Accessibility
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 <a href="https://colab.research.google.com/drive/19DYtr3yrJs6aKrXXyKWrBbMsCEvw46qw?usp=sharing"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="google colab logo"></a>
@@ -8,7 +8,7 @@
 This repository contains the anonymized failure data collected from our physical and device farms over a three-month period. The failure data involves 5,918 physical devices as well as 5,918 virtualized devices running on ARM commodity servers.
 
 For more details, please visit our website ([Android-Emulation-Testing.github.io](https://android-emulation-testing.github.io/)) or read our paper:
-* Dissecting the Fidelity of Mobile App Testing on Virtualized Devices: Experience and Enhancement
+* Virtual Device Farms for Mobile App Testing at Scale: A Pursuit for Fidelity, Efficiency, and Accessibility
 
 ## Data Format
 
