@@ -1,7 +1,7 @@
 # Artifact for MobiCom'23: Virtual Device Farms for Mobile App Testing at Scale: A Pursuit for Fidelity, Efficiency, and Accessibility
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-<a href="https://colab.research.google.com/drive/19DYtr3yrJs6aKrXXyKWrBbMsCEvw46qw?usp=sharing"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="google colab logo"></a>
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/19DYtr3yrJs6aKrXXyKWrBbMsCEvw46qw?usp=sharing)
 
 ## Overview
 
@@ -50,3 +50,17 @@ You can run the evaluation script that produces the major figures and tables in 
 ## License
 
 The failure data and its related scripts are made available under the GNU General Public License v3.0. By downloading it or using them, you agree to the terms of this license.
+
+## Reference
+
+If you use our dataset in your work, please reference it using
+
+```
+@inproceedings {lin2022virtual,
+    author = {Lin, Hao and Qiu, Jiaxing and Wang, Hongyi and Li, Zhenhua and Gong, Liangyi and Gao, Di and Liu, Yunhao and Qian, Feng and Zhang, Zhao and Yang, Ping and Xu, Tianyin},
+    title = {{Virtual Device Farms for Mobile App Testing at Scale: A Pursuit for Fidelity, Efficiency, and Accessibility}},
+    booktitle = {The 29th Annual International Conference on Mobile Computing and Networking (ACM MobiCom'23)},
+    year = {2023},
+    publisher = {ACM}
+  }
+```
